@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Today's date and an original haiku about shipping software.">
+  <meta name="color-scheme" content="dark light">
+  <title>Today &amp; a Haiku on Shipping Software</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #121924;
+      --ink: #e8edf4;
+      --muted: #9fb0c3;
+      --accent: #58d6a4;
+      --edge: #223042;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --ink: #10202f;
+        --muted: #4a5b6d;
+        --accent: #0f8f63;
+        --edge: #dfe7f0;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 1.5rem;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, rgba(88, 214, 164, 0.10), transparent 60%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      width: 100%;
+      max-width: 40rem;
+      background: var(--panel);
+      border: 1px solid var(--edge);
+      border-radius: 18px;
+      padding: clamp(1.75rem, 4vw, 3rem);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+    .eyebrow {
+      margin: 0;
+      font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .date {
+      margin: 0.4rem 0 0;
+      font-size: clamp(1.6rem, 5.5vw, 2.6rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .rule {
+      width: 3.5rem;
+      height: 2px;
+      margin: 1.75rem auto;
+      border: 0;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+    .haiku {
+      margin: 0;
+      font-size: clamp(1.25rem, 4vw, 1.7rem);
+      font-style: italic;
+      color: var(--ink);
+    }
+    .haiku p { margin: 0.15rem 0; }
+    figcaption {
+      margin-top: 1.4rem;
+      font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .fallback { color: var(--muted); font-style: italic; }
+    @media (prefers-reduced-motion: no-preference) {
+      main { animation: rise 0.5s ease-out both; }
+      @keyframes rise {
+        from { opacity: 0; transform: translateY(8px); }
+        to   { opacity: 1; transform: none; }
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Today is</p>
+    <h1 class="date" id="today">
+      <noscript><span class="fallback">Enable JavaScript to see today&rsquo;s date.</span></noscript>
+    </h1>
+
+    <hr class="rule">
+
+    <figure>
+      <blockquote class="haiku" aria-label="An original haiku about shipping software">
+        <p>Green checks, then deploy&mdash;</p>
+        <p>code that slept in branches wakes,</p>
+        <p>users feel the dawn.</p>
+      </blockquote>
+      <figcaption>An original haiku on shipping software</figcaption>
+    </figure>
+  </main>
+
+  <script>
+    // Render the viewer's actual current date. Nothing is hard-coded to a single
+    // day. Rollover is scheduled for the exact next local midnight, and the date
+    // is also re-rendered whenever the tab regains focus/visibility, so a tab
+    // left open (even with throttled background timers) is never stale on view.
+    (function () {
+      var el = document.getElementById("today");
+      if (!el) return;
+      var timer;
+      function render() {
+        var now = new Date();
+        try {
+          // Pin to en-US so the rendered date matches the document's lang="en"
+          // (a browser default locale could otherwise render a non-English date
+          // inside an English document — a screen-reader / bidi correctness bug).
+          el.textContent = now.toLocaleDateString("en-US", {
+            weekday: "long", year: "numeric", month: "long", day: "numeric"
+          });
+        } catch (e) {
+          el.textContent = now.toDateString();
+        }
+        // Fire at the exact local-midnight boundary. render() re-reads the clock,
+        // so even a timer that fires a hair early simply reschedules and corrects
+        // within milliseconds — the displayed day is never stale on view.
+        var nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+        clearTimeout(timer);
+        timer = setTimeout(render, nextMidnight - now);
+      }
+      render();
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) render();
+      });
+      window.addEventListener("focus", render);
+    })();
+  </script>
+</body>
+</html>
