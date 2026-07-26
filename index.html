@@ -90,6 +90,24 @@
       color: var(--muted);
     }
     .fallback { color: var(--muted); font-style: italic; }
+    .shiplog h2 { font-weight: 600; }
+    .shiplog-meta {
+      margin: 1rem 0 1.9rem;
+      display: grid;
+      gap: 0.6rem;
+      font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+    }
+    .shiplog-meta dt {
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .shiplog-meta dd {
+      margin: 0.2rem 0 0;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+    }
     .built {
       margin: 1.75rem 0 0;
       font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
@@ -123,6 +141,38 @@
       </blockquote>
       <figcaption>An original haiku on shipping while away</figcaption>
     </figure>
+
+    <hr class="rule">
+
+    <section class="shiplog" aria-labelledby="shiplog-heading">
+      <h2 class="eyebrow" id="shiplog-heading">Ship log</h2>
+
+      <!-- Build-time values, written into the markup when the page is built.
+           Deliberately NOT computed by client JS: a visitor's browser clock
+           cannot know when this page was last updated, and guessing it would
+           show a time that is merely "now" rather than the truth. Keep the
+           count below in sync with the number of blockquote.haiku elements on
+           this page (currently 2). -->
+      <dl class="shiplog-meta">
+        <div>
+          <dt>Last updated</dt>
+          <dd>2026-07-25 23:07 Central</dd>
+        </div>
+        <div>
+          <dt>Haiku on this page</dt>
+          <dd>2</dd>
+        </div>
+      </dl>
+
+      <figure>
+        <blockquote class="haiku" aria-label="An original haiku about instruments being recalibrated after an upgrade">
+          <p>The new engine hums;</p>
+          <p>we retune the old gauges</p>
+          <p>to trust them again.</p>
+        </blockquote>
+        <figcaption>An original haiku on recalibration</figcaption>
+      </figure>
+    </section>
 
     <p class="built">built overnight &mdash; night of 2026-07-21 (Central)</p>
   </main>
