@@ -108,6 +108,16 @@
       letter-spacing: 0.06em;
       color: var(--ink);
     }
+    .shiplog-entries {
+      margin: 0 0 1.9rem;
+      padding: 0;
+      list-style: none;
+      font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+    }
+    .shiplog-entries li { margin: 0.35rem 0; }
     .built {
       margin: 1.75rem 0 0;
       font-family: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
@@ -152,17 +162,21 @@
            cannot know when this page was last updated, and guessing it would
            show a time that is merely "now" rather than the truth. Keep the
            count below in sync with the number of blockquote.haiku elements on
-           this page (currently 2). -->
+           this page (currently 3). -->
       <dl class="shiplog-meta">
         <div>
           <dt>Last updated</dt>
-          <dd>2026-07-25 23:07 Central</dd>
+          <dd>2026-08-24 22:08 Central</dd>
         </div>
         <div>
           <dt>Haiku on this page</dt>
-          <dd>2</dd>
+          <dd>3</dd>
         </div>
       </dl>
+
+      <ul class="shiplog-entries" role="list">
+        <li>2026-08-23 &mdash; first armed night: the queue runs real work again</li>
+      </ul>
 
       <figure>
         <blockquote class="haiku" aria-label="An original haiku about instruments being recalibrated after an upgrade">
@@ -171,6 +185,15 @@
           <p>to trust them again.</p>
         </blockquote>
         <figcaption>An original haiku on recalibration</figcaption>
+      </figure>
+
+      <figure>
+        <blockquote class="haiku" aria-label="An original haiku about a gate that weighs the work of a night before letting it ship">
+          <p>The gate reads the night,</p>
+          <p>weighs each line against the proof&mdash;</p>
+          <p>then lifts, or does not.</p>
+        </blockquote>
+        <figcaption>An original haiku on the judge gate</figcaption>
       </figure>
     </section>
 
