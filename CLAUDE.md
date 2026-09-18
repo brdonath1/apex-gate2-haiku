@@ -1,4 +1,4 @@
-<!-- METASWARM-ROUTING BEGIN v1.7.0 rows:17 sha:c8bfad487b9e4ee4 -->
+<!-- METASWARM-ROUTING BEGIN v1.9.0 rows:17 sha:04057f259b56d626 -->
 <!-- Synced from metaswarm-autonomous-coding-stack templates/CLAUDE.md.metaswarm-routing.md.
      Never hand-edit between these markers; run scripts/routing/routing-sync.sh to update. -->
 ## MODEL ROUTING — MANDATORY FOR EVERY Task() SPAWN
@@ -25,23 +25,29 @@ from disk before spawning; if that fails, route every spawn `fable` and log
    or otherwise gate whether work ships -> `fable`; anything else -> D0.
    Genuinely torn between two rows -> take the stronger model
    (fable > opus > sonnet > haiku). Doubt never resolves down.
-3. Announce, then spawn. Immediately before each Task call, write one line:
-   `ROUTING: <role> -> model:<alias> [<row-id>]` — then pass exactly that model.
-   No ROUTING line, no spawn.
+3. A `ROUTING:` narration line is optional. If emitted, it must name the same
+   row and alias passed to the Task; the explicit Task model pin is authoritative.
 4. A verdict produced on the wrong model is VOID: discard it, log
    `ROUTING-VIOLATION: <role> ran on <got>, required <want>`, respawn correctly.
    A misrouted PASS never counts. A V8 rework spawned below `fable` is the same
    violation: stop it and respawn on `fable` before its review runs.
 
+**When to use a review row:** this table routes an independent review only when
+the work's risk, a protected boundary, CI, or the task itself requires one. It
+does not schedule review panels, invoke a MetaSwarm phase, require a reviewer
+count, or add a second pass. Routine work uses focused implementation checks;
+one consequential independent review is enough unless a protected gate requires
+more.
+
 | Row | When you spawn… | model: | Why |
 |---|---|---|---|
 | V1 | Architect (design author) | `fable` | design verdicts shape everything downstream |
-| V2 | Plan-gate reviewer — each of the 3, never mixed tiers | `fable` | a bad plan multiplies into bad code |
+| V2 | Plan reviewer — when an independent plan review is required | `fable` | a bad plan multiplies into bad code |
 | V3 | Design-gate Security reviewer | `fable` | security misses are one-way doors |
 | V4 | Design-gate CTO reviewer | `fable` | feasibility verdicts gate the build |
-| V5 | Code reviewer — any Claude-side review verdict on implementation, incl. the adversarial-review fallback when codex/gemini are unreachable | `fable` | it stands in for two external reviewers |
+| V5 | Code reviewer — when an independent consequential implementation review is required, including the adversarial-review fallback when codex/gemini are unreachable | `fable` | it supplies the required independent judgment |
 | V6 | Security auditor | `fable` | same stakes as V3 |
-| V7 | FINAL COMPREHENSIVE REVIEW — always its own spawn, never folded into another pass | `fable` | a false PASS here ships |
+| V7 | FINAL COMPREHENSIVE REVIEW — only when a protected gate or material risk requires it; it may satisfy the one consequential independent review | `fable` | a false PASS here ships |
 | V8 | Coder rework after the unit's 2nd adversarial FAIL (two-strike) | `fable` | two failures mean the unit outgrew its tier |
 | R1 | Researcher | `opus` | breadth and judgment, not a shipping verdict |
 | G1 | Design-gate PM / Designer / UX / Architect-reviewer personas (NOT the design-authoring Architect -> V1) | `opus` | named here deliberately — rule 2's verdict test applies only to unlisted roles; recoverable-miss reviews backstopped by V3/V4 |
@@ -72,7 +78,9 @@ from disk before spawning; if that fails, route every spawn `fable` and log
   error>` (the captured error text is mandatory; no error, no degradation).
   V5, V6 and V7 may run degraded only to report findings and must return
   `DEGRADED-BLOCK`, never PASS: the unit stays unmerged for the morning, and a
-  degraded V5 never counts toward min-reviewers. More than 2 degraded verdicts
+  degraded V5 never satisfies an independent-review requirement and never counts
+  toward min-reviewers when an independently required gate specifies that count.
+  More than 2 degraded verdicts
   in one night -> stop the remaining queue and report. If even `opus` cannot
   spawn, HALT the unit and report. Budget breakers pause work; they never
   re-tier a row.
@@ -123,11 +131,11 @@ a missing pin loses the VERSION LOCK — it never changes model family and no
 longer shrinks context. Pin health is preflight's job, not yours. No secret,
 URL, vault URI, env value, or raw model ID ever appears inside this block.*
 
-**For the operator:** this table decides which AI brain does each job — the most
-careful brain (Fable) sits at every checkpoint that could let a mistake ship. A
-ROUTING-VIOLATION in a report means a wrong-brain opinion was thrown away and the
-job redone properly; nothing shipped unchecked.
+**For the operator:** this table decides which AI brain does each job when a
+spawn is needed. Routine work uses focused checks; Fable supplies independent
+judgment only when the work requires it. A ROUTING-VIOLATION in a report means a
+wrong-brain opinion was thrown away and the required judgment redone properly.
 
-Routing-Table-Version: 1.7.0 · Rows: 17 · Last reviewed: 2026-08-09 ·
+Routing-Table-Version: 1.9.0 · Rows: 17 · Last reviewed: 2026-09-18 ·
 Source of truth: metaswarm-autonomous-coding-stack/templates/CLAUDE.md.metaswarm-routing.md
 <!-- METASWARM-ROUTING END -->
